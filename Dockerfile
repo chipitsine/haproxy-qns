@@ -7,7 +7,6 @@ COPY --from=golang:latest /usr/local/go/ /usr/local/go/
 ENV PATH="/usr/local/go/bin:${PATH}"
 
 RUN git clone https://github.com/aws/aws-lc
-#RUN cd aws-lc && export GIMME_GO_VERSION=1.18 && curl -sL https://raw.githubusercontent.com/travis-ci/gimme/master/gimme > gimme && bash gimme && export GOROOT='/root/.gimme/versions/go1.18.linux.amd64' && export PATH="/root/.gimme/versions/go1.18.linux.amd64/bin:${PATH}" && cmake -DBUILD_SHARED_LIBS=1 -B build && make -C build && make -C build install
 RUN cd aws-lc && cmake -DBUILD_SHARED_LIBS=1 -B build && make -C build && make -C build install
 
 FROM ubuntu:20.04 AS builder
