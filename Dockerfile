@@ -11,15 +11,8 @@ RUN apt-get -y update && apt-get -y install git g++ make gcc wget autoconf libto
 COPY --from=golang:latest /usr/local/go/ /usr/local/go/
 ENV PATH="/usr/local/go/bin:${PATH}"
 
-RUN if [ "$SSLLIB" = "QuicTLS" ]; \
-      then git clone --depth 1 https://github.com/quictls/quictls.git openssl && cd /openssl && cmake . && make && make install; \
-      elif [ "$SSLLIB" = "AWS-LC" ]; \
-      then git clone https://github.com/aws/aws-lc && cd aws-lc && cmake -DBUILD_SHARED_LIBS=1 -B build && make -C build && make -C build install; \
-      elif [ "$SSLLIB" = "LibreSSL" ]; \
-      then git clone https://github.com/libressl/portable.git libressl && cd /libressl && ./autogen.sh && autoreconf -fvi && ./configure && make && make install; \
-      else echo "not supported SSLLIB"; exit 1; \
-    fi
-
+RUN git clone --depth 1 https://github.com/quictls/quictls.git openssl && cd /openssl && cmake . && make && make install
+      
 FROM ubuntu:20.04 AS builder
 ARG SSLLIB
 
