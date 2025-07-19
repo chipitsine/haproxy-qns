@@ -11,9 +11,7 @@ RUN apt-get -y update && apt-get -y install git g++ make gcc wget autoconf libto
 COPY --from=golang:latest /usr/local/go/ /usr/local/go/
 ENV PATH="/usr/local/go/bin:${PATH}"
 
-RUN if [ "$SSLLIB" = "QuicTLS-1.1.1" ]; \
-      then git clone --depth 1 -b OpenSSL_1_1_1s+quic https://github.com/quictls/openssl.git && cd /openssl && ./config && make -j$(nproc) && make install_sw; \
-      elif [ "$SSLLIB" = "QuicTLS" ]; \
+RUN if [ "$SSLLIB" = "QuicTLS" ]; \
       then git clone --depth 1 https://github.com/quictls/quictls.git openssl && cd /openssl && cmake . && make && make install; \
       elif [ "$SSLLIB" = "AWS-LC" ]; \
       then git clone https://github.com/aws/aws-lc && cd aws-lc && cmake -DBUILD_SHARED_LIBS=1 -B build && make -C build && make -C build install; \
