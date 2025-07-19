@@ -11,6 +11,8 @@ RUN apt-get -y update && apt-get -y install git g++ make gcc wget autoconf libto
 COPY --from=golang:latest /usr/local/go/ /usr/local/go/
 ENV PATH="/usr/local/go/bin:${PATH}"
 
+RUN wget https://github.com/Kitware/CMake/releases/download/v3.31.8/cmake-3.31.8-linux-x86_64.tar.gz && cd /usr && tar --strip-components=1 -xzf /cmake-3.31.8-linux-x86_64.tar.gz
+
 RUN git clone --depth 1 https://github.com/quictls/quictls.git openssl && cd /openssl && cmake . && make && make install
       
 FROM ubuntu:20.04 AS builder
