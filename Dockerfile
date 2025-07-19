@@ -14,7 +14,7 @@ ENV PATH="/usr/local/go/bin:${PATH}"
 RUN if [ "$SSLLIB" = "QuicTLS-1.1.1" ]; \
       then git clone --depth 1 -b OpenSSL_1_1_1s+quic https://github.com/quictls/openssl.git && cd /openssl && ./config && make -j$(nproc) && make install_sw; \
       elif [ "$SSLLIB" = "QuicTLS" ]; \
-      then git clone --depth 1 https://github.com/quictls/quictls.git openssl && cd /openssl && ./config --libdir=lib && make -j$(nproc) && make install_sw; \
+      then git clone --depth 1 https://github.com/quictls/quictls.git openssl && cd /openssl && cmake . && make && make install; \
       elif [ "$SSLLIB" = "AWS-LC" ]; \
       then git clone https://github.com/aws/aws-lc && cd aws-lc && cmake -DBUILD_SHARED_LIBS=1 -B build && make -C build && make -C build install; \
       elif [ "$SSLLIB" = "LibreSSL" ]; \
