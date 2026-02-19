@@ -42,7 +42,7 @@ RUN apt-get -y update && apt-get -y install git make gcc liblua5.3-0 liblua5.3-d
     CPU=generic \
     $(if [ "$SSLLIB" = "QuicTLS" ] || [ "$SSLLIB" = "QuicTLS-1.1.1" ]; then echo USE_OPENSSL=1; elif [ "$SSLLIB" = "LibreSSL" ]; then echo USE_OPENSSL=1; elif [ "$SSLLIB" = "AWS-LC" ]; then echo USE_OPENSSL_AWSLC=1; else echo "not supported SSLLIB"; exit 1; fi) \
     USE_QUIC=1 \
-    USE_PROMETHEUS_EXPORTER=1 \
+    USE_PROMEX=1 \
     SSL_INC=/usr/local/include/ \
     SSL_LIB=/usr/local/lib/ \
     SMALL_OPTS="" \
