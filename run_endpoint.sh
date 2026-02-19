@@ -2,9 +2,6 @@
 
 set -eu
 
-# set up the routing needed for the simulation
-/setup.sh
-
 # The following variables are available for use:
 # - ROLE contains the role of this execution context, client or server
 # - SERVER_PARAMS contains user-supplied command line parameters
@@ -18,6 +15,9 @@ versionnegotiation|handshake|transfer|retry|resumption|http3|multiconnect|zerort
 	exit 127
 ;;
 esac
+
+# set up the routing needed for the simulation
+/setup.sh
 
 LOG=/logs/log.txt
 
@@ -36,10 +36,27 @@ elif [ "$ROLE" == "server" ]; then
 
 	case $TESTCASE in
 		retry)
-			HAP_EXTRA_ARGS="quic-force-retry" /usr/local/sbin/haproxy -d -dM -f /quic.cfg &> $LOG
+			HAP_EXTRA_ARGS="quic-force-retry" /usr/local/sbin/haproxy -d -dM -f /quic.cfg &> $LOG &
 		;;
 		*)
-			HAP_EXTRA_ARGS="" /usr/local/sbin/haproxy -d -dM -f /quic.cfg &> $LOG
+			HAP_EXTRA_ARGS="" /usr/local/sbin/haproxy -d -dM -f /quic.cfg &> $LOG &
 		;;
 	esac
+	HAP_PID=$!
+
+	query_prometheus() {
+		echo "# testcase: $TESTCASE" >> /logs/prometheus.txt
+		curl -s http://localhost:8405/metrics >> /logs/prometheus.txt 2>&1 || true
+	}
+
+	cleanup() {
+		query_prometheus
+		kill -TERM $HAP_PID 2>/dev/null || true
+		wait $HAP_PID 2>/dev/null || true
+		exit 0
+	}
+	trap cleanup SIGUSR1 TERM INT
+
+	wait $HAP_PID || true
+	query_prometheus
 fi
