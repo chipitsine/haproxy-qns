@@ -2,9 +2,6 @@
 
 set -eu
 
-# set up the routing needed for the simulation
-/setup.sh
-
 # The following variables are available for use:
 # - ROLE contains the role of this execution context, client or server
 # - SERVER_PARAMS contains user-supplied command line parameters
@@ -18,6 +15,9 @@ versionnegotiation|handshake|transfer|retry|resumption|http3|multiconnect|zerort
 	exit 127
 ;;
 esac
+
+# set up the routing needed for the simulation
+/setup.sh
 
 LOG=/logs/log.txt
 
